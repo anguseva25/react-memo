@@ -62,3 +62,10 @@
 .levelLink:visited {
   color: #0080c1;
 }
+
+.liteMode {
+  color: #004980;
+  font-family: "StratosSkyeng", sans-serif;
+  font-size: 18px;
+  margin-bottom: 48px;
+}

@@ -58,7 +58,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     minutes: 0,
   });
 
-  const { liteVersion, getTriesCount } = useContext(GameSettingsContext);
+  const { liteVersion, getTriesCount, printTriesText } = useContext(GameSettingsContext);
   const [triesCount, setTriesCount] = useState(getTriesCount());
   const [openedCards, setOpenedCards] = useState([]);
 
@@ -234,7 +234,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         ))}
       </div>
 
-      {liteVersion && <p className={styles.liteMode}>{`You have a ${triesCount} tries.....`}</p>}
+      {liteVersion && <p className={styles.liteMode}>{printTriesText(triesCount)}</p>}
 
       {isGameEnded ? (
         <div className={styles.modalContainer}>

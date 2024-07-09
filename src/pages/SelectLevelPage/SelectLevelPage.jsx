@@ -4,12 +4,13 @@ import styles from "./SelectLevelPage.module.css";
 import { Button } from "../../components/Button/Button";
 import { GameSettingsContext } from "../../context/GameSettingsContext";
 
+import cn from "classnames";
+
 export function SelectLevelPage() {
   const navigate = useNavigate();
   const { levelMode, setLevelMode, liteVersion, setLiteVersion } = useContext(GameSettingsContext);
 
   function handleLiteChange() {
-    console.log(liteVersion);
     setLiteVersion(prev => !prev);
   }
 
@@ -24,7 +25,7 @@ export function SelectLevelPage() {
         <ul className={styles.levels}>
           <li className={styles.level}>
             <a
-              className={styles.levelLink}
+              className={cn(styles.levelLink, levelMode === 1 ? styles.selected : "")}
               href="#"
               onClick={() => {
                 setLevelMode(1);
@@ -35,7 +36,7 @@ export function SelectLevelPage() {
           </li>
           <li className={styles.level}>
             <a
-              className={styles.levelLink}
+              className={cn(styles.levelLink, levelMode === 2 ? styles.selected : "")}
               href="#"
               onClick={() => {
                 setLevelMode(2);
@@ -46,7 +47,7 @@ export function SelectLevelPage() {
           </li>
           <li className={styles.level}>
             <a
-              className={styles.levelLink}
+              className={cn(styles.levelLink, levelMode === 3 ? styles.selected : "")}
               href="#"
               onClick={() => {
                 setLevelMode(3);
@@ -58,8 +59,7 @@ export function SelectLevelPage() {
         </ul>
         <label className={styles.liteMode}>
           Включить упрощенный режим (3 попытки)
-          {/*<input type="checkbox" value={levelMode} onChange={() => {() => setLiteVersion(levelMode)}} />*/}
-          <input type="checkbox" value={liteVersion} onChange={handleLiteChange} />
+          <input type="checkbox" checked={liteVersion} onChange={handleLiteChange} />
         </label>
         <Button onClick={startGame}>Старт</Button>
       </div>

@@ -1,10 +1,11 @@
 import { shuffle } from "lodash";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { generateDeck } from "../../utils/cards";
 import styles from "./Cards.module.css";
-import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
-import { Button } from "../../components/Button/Button";
-import { Card } from "../../components/Card/Card";
+import { EndGameModal } from "../EndGameModal/EndGameModal";
+import { Button } from "../Button/Button";
+import { Card } from "../Card/Card";
+import { GameSettingsContext } from "../../context/GameSettingsContext";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -57,6 +58,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     minutes: 0,
   });
 
+  const { liteVersion, getTriesCount } = useContext(GameSettingsContext);
+  const [triesCount, setTriesCount] = useState(getTriesCount());
+  const [openedCards, setOpenedCards] = useState([]);
+
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
     setStatus(status);
@@ -67,12 +72,17 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameStartDate(startDate);
     setTimer(getTimerValue(startDate, null));
     setStatus(STATUS_IN_PROGRESS);
+
+    setTriesCount(getTriesCount());
   }
   function resetGame() {
     setGameStartDate(null);
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
+
+    setTriesCount(getTriesCount());
+    setOpenedCards([]);
   }
 
   /**
@@ -127,11 +137,23 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
+      if (liteVersion && triesCount > 1) {
+        setTriesCount(triesCount - 1);
+        const prevCards = cards.map(card => ({
+          ...card,
+          open: card.open && openedCards.some(openCard => card.id === openCard.id),
+        }));
+        setTimeout(() => setCards(prevCards), 500);
+        return;
+      }
+
       finishGame(STATUS_LOST);
       return;
     }
 
     // ... игра продолжается
+
+    if (openCardsWithoutPair.length === 0) setOpenedCards(openCards);
   };
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
@@ -152,6 +174,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setCards(() => {
       return shuffle(generateDeck(pairsCount, 10));
     });
+
+    setTriesCount(getTriesCount());
 
     const timerId = setTimeout(() => {
       startGame();
@@ -209,6 +233,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         ))}
       </div>
+
+      {liteVersion && <p className={styles.liteMode}>{`You have a ${triesCount} tries.....`}</p>}
 
       {isGameEnded ? (
         <div className={styles.modalContainer}>

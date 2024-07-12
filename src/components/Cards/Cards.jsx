@@ -46,6 +46,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   const [cards, setCards] = useState([]);
   // Текущий статус игры
   const [status, setStatus] = useState(STATUS_PREVIEW);
+  // Статус активности проверки открытой пары карт
+  const [checkPair, setCheckPair] = useState(false);
 
   // Дата начала игры
   const [gameStartDate, setGameStartDate] = useState(null);
@@ -60,7 +62,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
   const { liteVersion, getTriesCount, printTriesText } = useContext(GameSettingsContext);
   const [triesCount, setTriesCount] = useState(getTriesCount());
-  const [openedCards, setOpenedCards] = useState([]);
+  const [openedCard, setOpenedCard] = useState(null);
 
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
@@ -81,8 +83,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
 
+    setCheckPair(false);
     setTriesCount(getTriesCount());
-    setOpenedCards([]);
+    setOpenedCard(null);
   }
 
   /**
@@ -94,9 +97,14 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
    */
   const openCard = clickedCard => {
     // Если карта уже открыта, то ничего не делаем
-    if (clickedCard.open) {
+    if (clickedCard.open || checkPair) {
       return;
     }
+
+    if (openedCard) {
+      setCheckPair(true);
+    }
+
     // Игровое поле после открытия кликнутой карты
     const nextCards = cards.map(card => {
       if (card.id !== clickedCard.id) {
@@ -141,9 +149,13 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         setTriesCount(triesCount - 1);
         const prevCards = cards.map(card => ({
           ...card,
-          open: card.open && openedCards.some(openCard => card.id === openCard.id),
+          open: card.open && card.id !== openedCard.id && card.id !== clickedCard.id,
         }));
-        setTimeout(() => setCards(prevCards), 500);
+        setTimeout(() => {
+          setCards(prevCards);
+          setOpenedCard(null);
+          setCheckPair(false);
+        }, 500);
         return;
       }
 
@@ -153,7 +165,12 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     // ... игра продолжается
 
-    if (openCardsWithoutPair.length === 0) setOpenedCards(openCards);
+    if (openCardsWithoutPair.length === 0) {
+      setOpenedCard(null);
+      setCheckPair(false);
+    } else if (openCardsWithoutPair.length === 1) {
+      setOpenedCard(clickedCard);
+    }
   };
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;

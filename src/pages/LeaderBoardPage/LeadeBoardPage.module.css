@@ -1,0 +1,63 @@
+.container {
+    padding-left: calc(50% - 472px);
+    padding-right: calc(50% - 472px);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.title {
+    font-family: Roboto;
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    text-align: left;
+    color: #ffffff;
+}
+
+.mainBox {
+    width: 944px;
+    height: 64px;
+    display: flex;
+    gap: 66px;
+    box-sizing: border-box;
+    padding-top: 16px;
+    margin-bottom: 16px;
+    font-size: 24px;
+    font-family: StratosSkyeng;
+    background-color: #fff;
+    border-radius: 12px;
+}
+
+.usersPosition {
+    width: 178px;
+    /*font-family: Poppins;*/
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    margin-left: 20px;
+}
+
+.nameUser {
+    width: 300px;
+    /*font-family: Poppins;*/
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    margin-left: 20px;
+}
+
+.timeRecord {
+    width: 130px;
+    /*font-family: Poppins;*/
+    font-size: 24px;
+    font-weight: 400;
+    line-height: 32px;
+    margin-left: 220px;
+    box-sizing: border-box;
+}
+

@@ -23,6 +23,14 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
     setInputValue(e.target.value);
   }
 
+  function handleKeyDown(e) {
+    if (e.key === "Enter") {
+      sendStatics();
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  }
+
   function sendStatics() {
     const username = inputValue.trim();
 
@@ -60,6 +68,7 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
             placeholder={"Пользователь"}
             value={inputValue}
             onChange={handleChangeUsername}
+            onKeyDown={handleKeyDown}
             readOnly={dataIsSent}
           />
           {dataIsSent || (

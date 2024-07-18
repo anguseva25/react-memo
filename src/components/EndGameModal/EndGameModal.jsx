@@ -13,6 +13,7 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
   const { setLeaders } = useContext(LeadersContext);
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
+  const [dataIsSent, setDataIsSent] = useState(false);
 
   const title = isWon && hasAchievement ? "Вы попали на Лидерборд!" : isWon ? "Вы победили!" : "Вы проиграли!";
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
@@ -30,7 +31,10 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
     postRequest({
       name: username,
       time: gameDurationMinutes * 60 + gameDurationSeconds,
-    }).then(data => setLeaders(data.leaders));
+    }).then(data => {
+      setLeaders(data.leaders);
+      setDataIsSent(true);
+    });
   }
 
   function handleSubmit() {
@@ -41,7 +45,7 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
 
   function handleLinkToLeaderboard(e) {
     e.preventDefault();
-    sendStatics();
+    // sendStatics();
     navigate("/leaderboard");
   }
 
@@ -50,12 +54,20 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
       <img className={styles.image} src={imgSrc} alt={imgAlt} />
       <h2 className={styles.title}>{title}</h2>
       {hasAchievement && (
-        <input
-          className={styles.input}
-          placeholder={"Пользователь"}
-          value={inputValue}
-          onChange={handleChangeUsername}
-        />
+        <div className={styles.addNameUser}>
+          <input
+            className={styles.input}
+            placeholder={"Пользователь"}
+            value={inputValue}
+            onChange={handleChangeUsername}
+            readOnly={dataIsSent}
+          />
+          {dataIsSent || (
+            <button className={styles.btnAddUser} onClick={sendStatics} disabled={!inputValue}>
+              ↵
+            </button>
+          )}
+        </div>
       )}
       <p className={styles.description}>Затраченное время:</p>
       <div className={styles.time}>

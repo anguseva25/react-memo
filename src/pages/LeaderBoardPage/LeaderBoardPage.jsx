@@ -5,6 +5,13 @@ import { useContext } from "react";
 import { LeadersContext } from "../../context/LeaderBoardContext";
 import cn from "classnames";
 
+function formatTime(seconds) {
+  const minutes = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+
+  return `${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+}
+
 export const LeaderBoardPage = () => {
   const { leaders } = useContext(LeadersContext);
 
@@ -26,7 +33,7 @@ export const LeaderBoardPage = () => {
           <div className={styles.mainBox} key={index}>
             <p className={styles.usersPosition}>{index + 1}</p>
             <p className={styles.nameUser}>{leader.name}</p>
-            <p className={styles.timeRecord}>{leader.time}</p>
+            <p className={styles.timeRecord}>{formatTime(leader.time)}</p>
           </div>
         ))}
       </main>

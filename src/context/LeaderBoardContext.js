@@ -19,7 +19,7 @@ export const LeadersProvider = ({ children }) => {
       const sortingLeaders = leadersTimeSorting(leaders.leaders);
       setLeaders(sortingLeaders.splice(0, 10));
     });
-  }, []);
+  });
 
   return <LeadersContext.Provider value={{ leaders, setLeaders }}>{children}</LeadersContext.Provider>;
 };

@@ -14,6 +14,7 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
   const [dataIsSent, setDataIsSent] = useState(false);
+  const [error, setError] = useState("");
 
   const title = isWon && hasAchievement ? "Вы попали на Лидерборд!" : isWon ? "Вы победили!" : "Вы проиграли!";
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
@@ -34,7 +35,10 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
   function sendStatics() {
     const username = inputValue.trim();
 
-    if (!username) return;
+    if (!username) {
+      setError("Введите имя");
+      return;
+    }
 
     postRequest({
       name: username,
@@ -42,6 +46,7 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
     }).then(data => {
       setLeaders(data.leaders);
       setDataIsSent(true);
+      setError("");
     });
   }
 
@@ -62,20 +67,23 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
       <img className={styles.image} src={imgSrc} alt={imgAlt} />
       <h2 className={styles.title}>{title}</h2>
       {hasAchievement && (
-        <div className={styles.addNameUser}>
-          <input
-            className={styles.input}
-            placeholder={"Пользователь"}
-            value={inputValue}
-            onChange={handleChangeUsername}
-            onKeyDown={handleKeyDown}
-            readOnly={dataIsSent}
-          />
-          {dataIsSent || (
-            <button className={styles.btnAddUser} onClick={sendStatics} disabled={!inputValue}>
-              ↵
-            </button>
-          )}
+        <div className={styles.inputData}>
+          <div className={styles.addNameUser}>
+            <input
+              className={styles.input}
+              placeholder={"Пользователь"}
+              value={inputValue}
+              onChange={handleChangeUsername}
+              onKeyDown={handleKeyDown}
+              readOnly={dataIsSent}
+            />
+            {dataIsSent || (
+              <button className={styles.btnAddUser} onClick={sendStatics} disabled={!inputValue}>
+                ↵
+              </button>
+            )}
+          </div>
+          {error && <p className={styles.error}>{error}</p>}
         </div>
       )}
       <p className={styles.description}>Затраченное время:</p>

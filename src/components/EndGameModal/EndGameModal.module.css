@@ -77,6 +77,10 @@
   text-align: center;
   border: none;
   outline: none;
+
+  &:read-only {
+    background: lightcyan;
+  }
 }
 
 .placeholder {
@@ -87,11 +91,19 @@
   font-family: "StratosSkyeng", sans-serif;
 }
 
+.inputData {
+  margin-bottom: 20px;
+
+  p {
+    text-align: center;
+  }
+}
+
 .addNameUser {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 20px;
+  margin-bottom: 6px;
 }
 
 .btnAddUser {
@@ -112,4 +124,11 @@
   &:disabled {
     background: cadetblue;
   }
+}
+
+.error {
+  color: lightcoral;
+  font-family: "StratosSkyeng", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
 }

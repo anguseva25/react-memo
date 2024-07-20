@@ -206,6 +206,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   // Обновляем значение таймера в интервале
   useEffect(() => {
     const intervalId = setInterval(() => {
+      if (status === STATUS_LOST || status === STATUS_WON) return;
+
       setTimer(getTimerValue(gameStartDate, gameEndDate));
     }, 300);
     return () => {
@@ -257,6 +259,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         <div className={styles.modalContainer}>
           <EndGameModal
             isWon={status === STATUS_WON}
+            hasAchievement={pairsCount >= 9}
             gameDurationSeconds={timer.seconds}
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}

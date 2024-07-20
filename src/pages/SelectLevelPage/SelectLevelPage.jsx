@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./SelectLevelPage.module.css";
 import { Button } from "../../components/Button/Button";
 import { GameSettingsContext } from "../../context/GameSettingsContext";
@@ -58,10 +58,13 @@ export function SelectLevelPage() {
           </li>
         </ul>
         <label className={styles.liteMode}>
-          Включить упрощенный режим (3 попытки)
+          Легкий режим (3 жизни)
           <input type="checkbox" checked={liteVersion} onChange={handleLiteChange} />
         </label>
         <Button onClick={startGame}>Старт</Button>
+        <Link to={"/leaderboard"} className={styles.link}>
+          Перейти к лидерборду
+        </Link>
       </div>
     </div>
   );

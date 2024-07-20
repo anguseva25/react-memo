@@ -1,9 +1,12 @@
 .container {
   width: 672px;
+  height: 100vh;
   margin: 0 auto;
   padding: 26px;
   padding-top: 22px;
   box-sizing: border-box;
+
+  overflow: hidden;
 }
 
 .cards {
@@ -23,6 +26,8 @@
   justify-content: center;
   align-items: center;
   background: #004980c0;
+
+  clear: both;
 }
 
 .header {

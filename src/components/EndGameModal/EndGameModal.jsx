@@ -9,14 +9,14 @@ import { useContext, useState } from "react";
 import { LeadersContext } from "../../context/LeaderBoardContext";
 import { useNavigate } from "react-router-dom";
 
-export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameDurationMinutes, onClick }) {
+export function EndGameModal({ isWon, achievements, gameDurationSeconds, gameDurationMinutes, onClick }) {
   const { setLeaders } = useContext(LeadersContext);
   const navigate = useNavigate();
   const [inputValue, setInputValue] = useState("");
   const [dataIsSent, setDataIsSent] = useState(false);
   const [error, setError] = useState("");
 
-  const title = isWon && hasAchievement ? "Вы попали на Лидерборд!" : isWon ? "Вы победили!" : "Вы проиграли!";
+  const title = isWon ? "Вы попали на Лидерборд!" : "Вы проиграли!";
   const imgSrc = isWon ? celebrationImageUrl : deadImageUrl;
   const imgAlt = isWon ? "celebration emodji" : "dead emodji";
 
@@ -43,6 +43,7 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
     postRequest({
       name: username,
       time: gameDurationMinutes * 60 + gameDurationSeconds,
+      achievements: achievements,
     }).then(data => {
       setLeaders(data.leaders);
       setDataIsSent(true);
@@ -66,7 +67,7 @@ export function EndGameModal({ isWon, hasAchievement, gameDurationSeconds, gameD
     <div className={styles.modal}>
       <img className={styles.image} src={imgSrc} alt={imgAlt} />
       <h2 className={styles.title}>{title}</h2>
-      {hasAchievement && (
+      {isWon && (
         <div className={styles.inputData}>
           <div className={styles.addNameUser}>
             <input

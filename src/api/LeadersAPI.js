@@ -1,4 +1,4 @@
-const topLeadersLink = "https://wedev-api.sky.pro/api/leaderboard";
+const topLeadersLink = "https://wedev-api.sky.pro/api/v2/leaderboard";
 
 export const getRequest = () => {
   return fetch(topLeadersLink, {

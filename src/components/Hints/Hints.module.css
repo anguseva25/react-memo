@@ -1,0 +1,55 @@
+
+.cntHint {
+  position: relative;
+
+  img {
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.disabled {
+  opacity: 0.4;
+}
+
+.bckColor {
+  position: absolute;
+  width: 200vw;
+  height: 200vh;
+  background: #004980;
+  opacity: 0.6;
+  z-index: 1;
+  transform: translate(-50%, -50%);
+}
+
+.cntInsight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #C2F5FF;
+  border-radius: 12px;
+  position: absolute;
+  top: 84px;
+  left: -77px;
+  padding: 25px 20px 20px;
+  width: 222px;
+  z-index: 1;
+  box-sizing: border-box;
+  font-family: "StratosSkyeng", sans-serif;
+  color: #004980;
+}
+
+.insightTitle {
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.insightDescription {
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 24px;
+  text-align: center;
+}

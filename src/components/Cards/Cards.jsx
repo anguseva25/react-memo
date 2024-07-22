@@ -6,6 +6,7 @@ import { EndGameModal } from "../EndGameModal/EndGameModal";
 import { Button } from "../Button/Button";
 import { Card } from "../Card/Card";
 import { GameSettingsContext } from "../../context/GameSettingsContext";
+import { InsightHint } from "../Hints/Hints";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -14,6 +15,7 @@ const STATUS_WON = "STATUS_WON";
 const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS";
 // Начало игры: игрок видит все карты в течении нескольких секунд
 const STATUS_PREVIEW = "STATUS_PREVIEW";
+const STATUS_FROZEN = "STATUS_FROZEN";
 
 function getTimerValue(startDate, endDate) {
   if (!startDate && !endDate) {
@@ -60,6 +62,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     minutes: 0,
   });
 
+  const [hasHint, setHasHint] = useState(true);
   const { liteVersion, getTriesCount, printTriesText } = useContext(GameSettingsContext);
   const [triesCount, setTriesCount] = useState(getTriesCount());
   const [openedCard, setOpenedCard] = useState(null);
@@ -86,6 +89,18 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setCheckPair(false);
     setTriesCount(getTriesCount());
     setOpenedCard(null);
+    setHasHint(true);
+  }
+
+  function handleInsightClick() {
+    setStatus(STATUS_FROZEN);
+
+    setTimeout(() => {
+      setStatus(STATUS_IN_PROGRESS);
+      setHasHint(false);
+
+      gameStartDate.setMilliseconds(gameStartDate.getMilliseconds() + 5000);
+    }, 5000);
   }
 
   /**
@@ -175,6 +190,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
   const isGameEnded = status === STATUS_LOST || status === STATUS_WON;
 
+  const achievements =
+    status !== STATUS_WON ? [] : pairsCount >= 9 && hasHint ? [1, 2] : pairsCount >= 9 ? [1] : hasHint ? [2] : [];
+
   // Игровой цикл
   useEffect(() => {
     // В статусах кроме превью доп логики не требуется
@@ -206,14 +224,14 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   // Обновляем значение таймера в интервале
   useEffect(() => {
     const intervalId = setInterval(() => {
-      if (status === STATUS_LOST || status === STATUS_WON) return;
+      if (status === STATUS_LOST || status === STATUS_WON || status === STATUS_FROZEN) return;
 
       setTimer(getTimerValue(gameStartDate, gameEndDate));
     }, 300);
     return () => {
       clearInterval(intervalId);
     };
-  }, [gameStartDate, gameEndDate]);
+  }, [gameStartDate, gameEndDate, status]);
 
   return (
     <div className={styles.container}>
@@ -238,7 +256,12 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
-        {status === STATUS_IN_PROGRESS ? <Button onClick={resetGame}>Начать заново</Button> : null}
+        {status === STATUS_IN_PROGRESS || status === STATUS_FROZEN ? (
+          <>
+            <InsightHint disabled={!hasHint} handleClick={handleInsightClick} />
+            <Button onClick={resetGame}>Начать заново</Button>
+          </>
+        ) : null}
       </div>
 
       <div className={styles.cards}>
@@ -246,7 +269,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           <Card
             key={card.id}
             onClick={() => openCard(card)}
-            open={status !== STATUS_IN_PROGRESS ? true : card.open}
+            open={status !== STATUS_IN_PROGRESS || status === STATUS_FROZEN ? true : card.open}
             suit={card.suit}
             rank={card.rank}
           />
@@ -259,7 +282,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         <div className={styles.modalContainer}>
           <EndGameModal
             isWon={status === STATUS_WON}
-            hasAchievement={pairsCount >= 9}
+            achievements={achievements}
             gameDurationSeconds={timer.seconds}
             gameDurationMinutes={timer.minutes}
             onClick={resetGame}
